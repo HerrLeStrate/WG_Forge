@@ -2,12 +2,13 @@ package me.herrlestrate.wgforge_task;
 
 import me.herrlestrate.wgforge_task.SQL.SQLWorker;
 import me.herrlestrate.wgforge_task.Tasks.First;
+import me.herrlestrate.wgforge_task.Tasks.Second;
 
 import java.util.Scanner;
 
 public class Application {
     private static SQLWorker sqlWorker;
-    private static int TASKS_AVAILABLE = 1;
+    private static int TASKS_AVAILABLE = 2;
 
     public static void main(String[] args){
         sqlWorker = new SQLWorker();
@@ -31,6 +32,7 @@ public class Application {
                 new First();
                 break;
             case 2:
+                new Second();
                 break;
             default:
                 break;

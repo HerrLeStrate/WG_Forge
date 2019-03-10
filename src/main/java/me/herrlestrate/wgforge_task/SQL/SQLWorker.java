@@ -73,6 +73,16 @@ public class SQLWorker {
 
     }
 
+    public void putCatsStat(String sql){
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void clearTable(String tablename){
         try {
             Statement statement = connection.createStatement();
