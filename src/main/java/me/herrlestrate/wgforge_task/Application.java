@@ -1,6 +1,7 @@
 package me.herrlestrate.wgforge_task;
 
 import me.herrlestrate.wgforge_task.SQL.SQLWorker;
+import me.herrlestrate.wgforge_task.Server.HttpServer;
 import me.herrlestrate.wgforge_task.Tasks.First;
 import me.herrlestrate.wgforge_task.Tasks.Second;
 
@@ -8,15 +9,15 @@ import java.util.Scanner;
 
 public class Application {
     private static SQLWorker sqlWorker;
-    private static int TASKS_AVAILABLE = 2;
+    private static int TASKS_AVAILABLE = 6;
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws Throwable {
         sqlWorker = new SQLWorker();
 
         init();
     }
 
-    private static void init(){
+    private static void init() throws Throwable {
         Scanner in = new Scanner(System.in);
         boolean correctInput = false;
         int numberTask = 0;
@@ -35,6 +36,7 @@ public class Application {
                 new Second();
                 break;
             default:
+                new HttpServer();
                 break;
         }
     }
