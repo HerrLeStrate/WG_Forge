@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+}
+
+version '1.0-SNAPSHOT'
+defaultTasks('clean','build')
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    flatDir{
+        dir 'libs'
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile (name: 'postgresql-42.2.5', ext: 'jar')
+}
+
+jar {
+    baseName = 'WGForge Task'
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+        configurations.runtime.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    exclude "META-INF/*.SF", "META-INF/*.RSA"
+    manifest{
+        attributes 'Main-Class': 'me.herrlestrate.wgforge_task.Application',
+                'Implementation-Title': 'WGForge Task',
+                'Implementation-Version': 1.0
+    }
+
+}
