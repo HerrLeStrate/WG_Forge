@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.sql.ResultSet;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class SocketProcessor implements Runnable {
 
@@ -20,6 +22,9 @@ public class SocketProcessor implements Runnable {
     private String line;
     private JSONObject json;
     private SQLWorker sqlWorker;
+
+    private static int TIME_DELAY = 60; //In seconds
+    private static int MAX_QUERIES = 600;
 
     public SocketProcessor(Socket s) throws Throwable {
         this.s = s;
@@ -31,6 +36,19 @@ public class SocketProcessor implements Runnable {
     public void run() {
         try {
             readInputHeaders();
+
+            if(limitQueries()){
+                String msg = "429 Too Many Requests";
+                String response = "HTTP/1.1 "+msg+"\r\n" +
+                        "Server: YarServer/2009-09-09\r\n" +
+                        "Content-Type: text/html\r\n" +
+                        "Content-Length: " + msg.length() + "\r\n" +
+                        "Connection: close\r\n\r\n";
+                String result = response + msg;
+                os.write(result.getBytes());
+                os.flush();
+                return;
+            }
 
             String[] args = line.split(" ");
             System.err.println(args[0] + ":" + args[1]);
@@ -89,6 +107,14 @@ public class SocketProcessor implements Runnable {
             }
         }
         System.err.println("Client processing finished");
+    }
+
+    private boolean limitQueries(){
+        long time = System.currentTimeMillis();
+        Queue<Long> timeHistory = HttpServer.getTimeHistory();
+        while(timeHistory.size() > 0 && (timeHistory.peek() + TIME_DELAY*1000) < time)timeHistory.poll();
+        timeHistory.offer(time);
+        return (timeHistory.size() > MAX_QUERIES);
     }
 
     private void writeResponse(String s,String type) throws Throwable {
