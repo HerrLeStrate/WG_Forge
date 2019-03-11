@@ -17,6 +17,7 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile (name: 'postgresql-42.2.5', ext: 'jar')
+    compile 'org.json:json:20171018'
 }
 
 jar {
